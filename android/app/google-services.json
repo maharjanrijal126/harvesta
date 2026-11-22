@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "197795927805",
+    "project_id": "harvesta-87528",
+    "storage_bucket": "harvesta-87528.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197795927805:android:b3dde9d3c4f52f5bd19094",
+        "android_client_info": {
+          "package_name": "com.example.harvesta"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIv3KlzlyfmtngBAZvRmfE5Zei6RDf3kE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
