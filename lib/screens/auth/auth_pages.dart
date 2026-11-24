@@ -354,7 +354,7 @@ class _FarmerLoginPageState extends State<FarmerLoginPage> {
       context,
       (v) => setState(() => _loading = v),
       () => AuthService.signIn(
-        email: AuthService.farmerEmail(_id.text),
+        email: _id.text,
         password: _pass.text,
         role: 'farmer',
       ),
@@ -399,7 +399,8 @@ class _FarmerLoginPageState extends State<FarmerLoginPage> {
         ),
       ),
       const SizedBox(height: 16),
-      Row(
+      Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           const Text(
             'New to Harvesta? ',
@@ -440,6 +441,7 @@ class FarmerRegisterPage extends StatefulWidget {
 class _FarmerRegisterPageState extends State<FarmerRegisterPage> {
   final _form = GlobalKey<FormState>();
   final _name = TextEditingController();
+  final _email = TextEditingController();
   final _phone = TextEditingController();
   final _farm = TextEditingController();
   final _loc = TextEditingController();
@@ -449,7 +451,7 @@ class _FarmerRegisterPageState extends State<FarmerRegisterPage> {
 
   @override
   void dispose() {
-    for (final c in [_name, _phone, _farm, _loc, _info, _pass]) {
+    for (final c in [_name, _email, _phone, _farm, _loc, _info, _pass]) {
       c.dispose();
     }
     super.dispose();
@@ -462,6 +464,7 @@ class _FarmerRegisterPageState extends State<FarmerRegisterPage> {
       (v) => setState(() => _loading = v),
       () => AuthService.registerFarmer(
         fullName: _name.text,
+        email: _email.text,
         phone: _phone.text,
         password: _pass.text,
         farmName: _farm.text,
@@ -485,6 +488,14 @@ class _FarmerRegisterPageState extends State<FarmerRegisterPage> {
               label: 'Full name',
               hint: 'Ram Tamang',
               validator: reqV,
+            ),
+            HField(
+              controller: _email,
+              label: 'Email',
+              hint: 'ram.tamang@example.com',
+              icon: Icons.mail_outline,
+              keyboard: TextInputType.emailAddress,
+              validator: emailV,
             ),
             HField(
               controller: _phone,

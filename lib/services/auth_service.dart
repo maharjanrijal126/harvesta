@@ -16,10 +16,13 @@ class AuthService {
 
   /// Farmers sign in with a phone number or an email. Firebase email/password auth needs an email,
   /// so a phone number is mapped to <digits>@farmer.harvesta.app behind the scenes.
+  static String farmerPhoneDigits(String input) =>
+      input.replaceAll(RegExp(r'[^0-9]'), '');
+
   static String farmerEmail(String input) {
     final v = input.trim();
     if (v.contains('@')) return v.toLowerCase();
-    return '${v.replaceAll(RegExp(r'[^0-9]'), '')}@farmer.harvesta.app';
+    return '${farmerPhoneDigits(v)}@farmer.harvesta.app';
   }
 
   static String friendly(Object e) {
@@ -53,8 +56,22 @@ class AuthService {
     required String password,
     required String role,
   }) async {
+    var signInEmail = email.trim();
+    if (role == 'farmer' && !signInEmail.contains('@')) {
+      final phoneDigits = farmerPhoneDigits(signInEmail);
+      final farmers = await _users
+          .where('phoneDigits', isEqualTo: phoneDigits)
+          .limit(1)
+          .get();
+      final registeredEmail = farmers.docs.isEmpty
+          ? null
+          : farmers.docs.first.data()['email'];
+      signInEmail = registeredEmail is String && registeredEmail.isNotEmpty
+          ? registeredEmail
+          : farmerEmail(signInEmail);
+    }
     final cred = await _auth.signInWithEmailAndPassword(
-      email: email.trim(),
+      email: signInEmail,
       password: password,
     );
     final doc = await _users.doc(cred.user!.uid).get();
@@ -98,33 +115,34 @@ class AuthService {
 
   static Future<void> registerFarmer({
     required String fullName,
+    required String email,
     required String phone,
     required String password,
     required String farmName,
     required String location,
     required String farmInfo,
   }) async {
-    final email = farmerEmail(phone);
+    final normalizedEmail = email.trim().toLowerCase();
     final cred = await _auth.createUserWithEmailAndPassword(
-      email: email,
+      email: normalizedEmail,
       password: password,
     );
     await cred.user!.updateDisplayName(fullName.trim());
+    final profile = AppUser(
+      uid: cred.user!.uid,
+      role: 'farmer',
+      name: fullName.trim(),
+      email: normalizedEmail,
+      phone: phone.trim(),
+      farmName: farmName.trim(),
+      location: location.trim(),
+      farmInfo: farmInfo.trim(),
+      verificationStatus: 'pending',
+    ).toMap();
+    profile['phoneDigits'] = farmerPhoneDigits(phone);
     await _users
         .doc(cred.user!.uid)
-        .set(
-          AppUser(
-            uid: cred.user!.uid,
-            role: 'farmer',
-            name: fullName.trim(),
-            email: email,
-            phone: phone.trim(),
-            farmName: farmName.trim(),
-            location: location.trim(),
-            farmInfo: farmInfo.trim(),
-            verificationStatus: 'pending',
-          ).toMap(),
-        );
+        .set(profile);
   }
 
   /// Returns true if a reset email was sent, false if a support request was filed instead
