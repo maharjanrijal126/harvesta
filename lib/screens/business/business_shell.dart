@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme.dart';
 import '../../core/utils.dart';
 import '../../core/widgets.dart';
+import '../../core/images.dart';
 import '../../models/models.dart';
 import '../../models/sample_data.dart';
 import '../../services/db.dart';
@@ -73,9 +74,9 @@ class CartButton extends StatelessWidget {
     builder: (c, cart, _) => Padding(
       padding: const EdgeInsets.only(right: 8),
       child: IconButton(
-        onPressed: () =>
-            Navigator.of(c)
-                .push(MaterialPageRoute(builder: (_) => const CartPage())),
+        onPressed: () => Navigator.of(
+          c,
+        ).push(MaterialPageRoute(builder: (_) => const CartPage())),
         icon: Badge(
           isLabelVisible: cart.count > 0,
           label: Text('${cart.count}'),
@@ -176,14 +177,15 @@ class _MiniProduct extends StatelessWidget {
   @override
   Widget build(BuildContext context) => HCard(
     margin: EdgeInsets.zero,
-    onTap: () => Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => ProductDetailPage(product: p))),
+    onTap: () => Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => ProductDetailPage(product: p))),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Text(emojiFor(p.name), style: const TextStyle(fontSize: 22)),
+            ProduceImage(name: p.name, width: 32, height: 32, radius: 8),
             const SizedBox(width: 8),
             Expanded(
               child: Text(

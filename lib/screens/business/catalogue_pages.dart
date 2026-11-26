@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme.dart';
 import '../../core/utils.dart';
 import '../../core/widgets.dart';
+import '../../core/images.dart';
 import '../../models/models.dart';
 import '../../services/db.dart';
 import '../../state/cart_state.dart';
@@ -210,11 +211,12 @@ class ProductTile extends StatelessWidget {
   final Product p;
   @override
   Widget build(BuildContext context) => HCard(
-    onTap: () => Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => ProductDetailPage(product: p))),
+    onTap: () => Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => ProductDetailPage(product: p))),
     child: Row(
       children: [
-        EmojiTile(emojiFor(p.name)),
+        ProduceImage(name: p.name),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -297,8 +299,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             final ok = await addToCart(context, p, _qty);
             if (ok && context.mounted) {
               snack(context, '${p.name} added to your order.');
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => const CartPage()));
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const CartPage()));
             }
           }),
           const SizedBox(height: 8),
@@ -314,14 +317,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ],
       ),
       children: [
-        Container(
-          height: 170,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: HColors.lime,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Text(emojiFor(p.name), style: const TextStyle(fontSize: 84)),
+        ProduceImage(
+          name: p.name,
+          width: double.infinity,
+          height: 190,
+          radius: 16,
         ),
         const SizedBox(height: 14),
         HCard(

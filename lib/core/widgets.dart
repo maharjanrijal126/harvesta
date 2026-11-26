@@ -42,35 +42,49 @@ Future<void> signOutAndReset(BuildContext context) async {
 }
 
 class HLogo extends StatelessWidget {
-  const HLogo({super.key, this.size = 28, this.light = false});
+  const HLogo({
+    super.key,
+    this.size = 28,
+    this.light = false,
+    this.showText = true,
+  });
   final double size;
   final bool light;
+  final bool showText;
   @override
   Widget build(BuildContext context) => Row(
     mainAxisSize: MainAxisSize.min,
     children: [
-      Container(
+      Image.asset(
+        'assets/logo/logo.png',
         width: size,
         height: size,
-        decoration: BoxDecoration(
-          color: light ? Colors.white : HColors.forest,
-          shape: BoxShape.circle,
-        ),
-        child: Icon(
-          Icons.eco,
-          color: light ? HColors.forest : Colors.white,
-          size: size * 0.6,
-        ),
-      ),
-      const SizedBox(width: 8),
-      Text(
-        'Harvesta',
-        style: TextStyle(
-          color: light ? Colors.white : HColors.forest,
-          fontWeight: FontWeight.w800,
-          fontSize: 15,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) => Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            color: light ? Colors.white : HColors.forest,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.eco,
+            color: light ? HColors.forest : Colors.white,
+            size: size * 0.6,
+          ),
         ),
       ),
+      if (showText) ...[
+        const SizedBox(width: 8),
+        Text(
+          'Harvesta',
+          style: TextStyle(
+            color: light ? Colors.white : HColors.forest,
+            fontWeight: FontWeight.w800,
+            fontSize: 15,
+          ),
+        ),
+      ],
     ],
   );
 }
